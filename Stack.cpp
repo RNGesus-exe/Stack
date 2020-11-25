@@ -57,15 +57,12 @@ public:
 			temp = temp->next;
 		}
 	}
-
 	bool isEmpty() const {
 		return head == nullptr;
 	}
-
 	Node& getHead() {
 		return this->head;
 	}
-
 	bool checkBraces(std::string equation) {
 		Stack<char> braces;
 
@@ -86,7 +83,44 @@ public:
 		}
 		return braces.isEmpty();
 	}
+	bool isOperator(char ch) {
+		return (ch == '*' || ch == '+' || ch == '-' || ch == '/' || ch == '%');
+	}
+	int getPre(char op) {
+		switch (op) {
+		case '/':
+		case '%':
+			return 3;
+		case '*':
+			return 2;
+		case '-':
+		case '+':
+			return 1;
+		default:
+			std::cerr << "Such an operator does not exist!!!";
+		}
+	}
 
+	std::string infixToPostfix(std::string infix) {
+		Stack<char> temp_stk;
+		std::string postfix;
+		for (int i = 0; i < infix.length(); i++) {
+			if (this->isOperator(infix[i])) {
+				while ((!temp_stk.isEmpty()) && this->getPre(infix[i]) <= this->getPre(temp_stk.peekAtTop())) {
+					postfix.push_back(temp_stk.pop());
+				}
+				temp_stk.push(infix[i]);
+			}
+			else {
+				postfix.push_back(infix[i]);
+			}
+		}
+
+		while (!temp_stk.isEmpty()) {
+			postfix.push_back(temp_stk.pop());
+		}
+		return postfix;
+	}
 	~Stack() {
 		while (this->head) {
 			this->pop();
@@ -97,8 +131,8 @@ public:
 int main() {
 
 	Stack<int> stk;
-	std::string str = "[{({[]})}];-;[{({[]})}]";
-	std::cout << stk.checkBraces(str) << std::endl;
+	std::string str = "a*b/c%e-f";
+	std::cout << stk.infixToPostfix(str) << std::endl;
 
 	return EXIT_SUCCESS;
 }
