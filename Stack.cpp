@@ -7,7 +7,6 @@ class Stack {
 		T data;
 		Node* next;
 	}*head;
-
 public:
 
 	Stack():head(nullptr) {}
@@ -100,7 +99,6 @@ public:
 			std::cerr << "Such an operator does not exist!!!";
 		}
 	}
-
 	std::string infixToPostfix(std::string infix) {
 		Stack<char> temp_stk;
 		std::string postfix;
@@ -115,11 +113,38 @@ public:
 				postfix.push_back(infix[i]);
 			}
 		}
-
 		while (!temp_stk.isEmpty()) {
 			postfix.push_back(temp_stk.pop());
 		}
 		return postfix;
+	}
+	int evaluatePostFix(std::string postfix) {
+		Stack<int> stk_temp;
+		for (int i = 0; i < postfix.length(); i++) {
+			if (isOperator(postfix[i])) {
+				switch (postfix[i]) {
+				case '+':
+					stk_temp.push(stk_temp.pop() + stk_temp.pop());
+					break;
+				case '-':
+					stk_temp.push(stk_temp.pop() - stk_temp.pop());
+					break;
+				case '*':
+					stk_temp.push(stk_temp.pop() * stk_temp.pop());
+					break;
+				case '/':
+					stk_temp.push(stk_temp.pop() / stk_temp.pop());
+					break;
+				case '%':
+					stk_temp.push(stk_temp.pop() % stk_temp.pop());
+					break;
+				}
+			}
+			else {
+				stk_temp.push(postfix[i]-'0');
+			}
+		}
+		return stk_temp.pop();
 	}
 	~Stack() {
 		while (this->head) {
@@ -131,8 +156,7 @@ public:
 int main() {
 
 	Stack<int> stk;
-	std::string str = "a*b/c%e-f";
-	std::cout << stk.infixToPostfix(str) << std::endl;
-
+	std::string str = "";
+	std::cout << stk.evaluatePostFix(stk.infixToPostfix(str)) << std::endl;
 	return EXIT_SUCCESS;
 }
